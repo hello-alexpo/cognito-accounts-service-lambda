@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-package com.workingbit.users.exception;
+package com.workingbit.accounts.exception;
 
 /**
  * This is the exception thrown when one is not authorized to access a resource.

@@ -1,4 +1,4 @@
-package com.workingbit.users;
+package com.workingbit.accounts;
 
 import java.util.Map;
 
