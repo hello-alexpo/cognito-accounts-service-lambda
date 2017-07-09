@@ -13,21 +13,13 @@
  * permissions and limitations under the License.
  */
 
-package com.workingbit.users.exception;
+package com.workingbit.accounts.exception;
 
-/**
- * This is the exception thrown when AWSCognitoDeveloperAuthenticationSample fails to retrieve data from AWS
- * service.
- */
-public class DataAccessException extends Exception {
+public class MissingParameterException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-    public DataAccessException(String message) {
-        super(message);
-    }
-
-    public DataAccessException(String message, Throwable cause) {
-        super(message, cause);
+    public MissingParameterException(String parameter) {
+        super("The parameter [" + parameter + "] is required.");
     }
 }

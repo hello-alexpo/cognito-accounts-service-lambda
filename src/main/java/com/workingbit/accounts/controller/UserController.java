@@ -1,8 +1,8 @@
-package com.workingbit.users.controller;
+package com.workingbit.accounts.controller;
 
-import com.workingbit.users.common.StringMap;
-import com.workingbit.users.config.AwsProperties;
-import com.workingbit.users.service.AWSCognitoService;
+import com.workingbit.accounts.common.StringMap;
+import com.workingbit.accounts.config.AwsProperties;
+import com.workingbit.accounts.service.AWSCognitoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

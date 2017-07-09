@@ -1,11 +1,11 @@
-package com.workingbit.users.service;
+package com.workingbit.accounts.service;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.model.*;
-import com.workingbit.users.config.AwsProperties;
-import com.workingbit.users.exception.DataAccessException;
+import com.workingbit.accounts.config.AwsProperties;
+import com.workingbit.accounts.exception.DataAccessException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
