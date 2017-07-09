@@ -1,14 +1,14 @@
-package com.workingbit.users.service;
+package com.workingbit.accounts.service;
 
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProviderClient;
 import com.amazonaws.services.cognitoidp.model.*;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.workingbit.users.common.CommonUtils;
-import com.workingbit.users.common.StringMap;
-import com.workingbit.users.config.AwsProperties;
-import com.workingbit.users.config.OAuthProperties;
-import com.workingbit.users.exception.DataAccessException;
+import com.workingbit.accounts.common.CommonUtils;
+import com.workingbit.accounts.common.StringMap;
+import com.workingbit.accounts.config.AwsProperties;
+import com.workingbit.accounts.config.OAuthProperties;
+import com.workingbit.accounts.exception.DataAccessException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,16 +28,16 @@ public class AWSCognitoService {
 
   private final AwsProperties awsProperties;
   private final OAuthProperties oAuthProperties;
-  private final OAuthClientService oAuthClientService;
-  private final DynamoDbService dynamoDbService;
+  private final com.workingbit.accounts.service.OAuthClientService oAuthClientService;
+  private final com.workingbit.accounts.service.DynamoDbService dynamoDbService;
 
   private final AWSCognitoIdentityProvider awsCognitoIdentityProvider;
 
   @Autowired
   public AWSCognitoService(AwsProperties awsProperties,
                            OAuthProperties oAuthProperties,
-                           OAuthClientService oAuthClientService,
-                           DynamoDbService dynamoDbService) {
+                           com.workingbit.accounts.service.OAuthClientService oAuthClientService,
+                           com.workingbit.accounts.service.DynamoDbService dynamoDbService) {
     this.awsProperties = awsProperties;
     this.awsCognitoIdentityProvider = AWSCognitoIdentityProviderClient.builder()
         .withRegion(awsProperties.getRegion())

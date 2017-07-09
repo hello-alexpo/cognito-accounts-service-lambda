@@ -20,6 +20,8 @@ service: cognito-accounts-service-lambda-dev
 provider:
   name: aws
   runtime: java8
+  timeout: 300
+  memorySize: 512
 
 # you can overwrite defaults here
   stage: dev
@@ -37,6 +39,17 @@ provider:
             - Ref: 'AWS::Region'
             - Ref: 'AWS::AccountId'
             - 'userpool/*'
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+      Resource:
+        - 'Fn::Join':
+          - ':'
+          -
+            - 'arn:aws:dynamodb'
+            - Ref: 'AWS::Region'
+            - Ref: 'AWS::AccountId'
+            - 'table/User'
 
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
@@ -60,7 +73,7 @@ provider:
 
 # you can add packaging information here
 package:
-  artifact: target/accounts-service-0.0.1-SNAPSHOT.jar
+  artifact: target/accounts-service-0.0.1-SNAPSHOT-lambda.zip
 
 functions:
   accountsService:
@@ -123,7 +136,36 @@ functions:
 #      variable2: value2
 
 # you can add CloudFormation resource templates here
-#resources:
+resources:
+  Resources:
+    DynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: User
+        AttributeDefinitions:
+          - AttributeName: uid
+            AttributeType: S
+        KeySchema:
+          - AttributeName: uid
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    DynamoDBIamPolicy:
+      Type: AWS::IAM::Policy
+      DependsOn: DynamoDbTable
+      Properties:
+        PolicyName: lambda-dynamodb
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+              Resource: arn:aws:dynamodb:*:*:table/User
+        Roles:
+          - Ref: IamRoleLambdaExecution
 #  Resources:
 #    NewResource:
 #      Type: AWS::S3::Bucket
