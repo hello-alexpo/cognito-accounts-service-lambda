@@ -23,6 +23,8 @@ dist/
 nbdist/
 .nb-gradle/
 
+.serverless
+
 aws.properties
 oauth.properties
 serverless.yml
