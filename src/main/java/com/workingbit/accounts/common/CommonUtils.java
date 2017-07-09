@@ -1,4 +1,4 @@
-package com.workingbit.users.common;
+package com.workingbit.accounts.common;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

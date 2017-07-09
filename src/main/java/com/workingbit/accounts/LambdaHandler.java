@@ -1,4 +1,4 @@
-package com.workingbit.users;
+package com.workingbit.accounts;
 
 import com.amazonaws.serverless.exceptions.ContainerInitializationException;
 import com.amazonaws.serverless.proxy.internal.model.AwsProxyRequest;
@@ -7,7 +7,7 @@ import com.amazonaws.serverless.proxy.spring.SpringLambdaContainerHandler;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 
-public class Handler implements RequestHandler<AwsProxyRequest, AwsProxyResponse> {
+public class LambdaHandler implements RequestHandler<AwsProxyRequest, AwsProxyResponse> {
   private static SpringLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler;
 
   private static SpringLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> getHandler() {

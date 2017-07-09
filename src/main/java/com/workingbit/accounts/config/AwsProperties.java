@@ -1,4 +1,4 @@
-package com.workingbit.users.config;
+package com.workingbit.accounts.config;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;

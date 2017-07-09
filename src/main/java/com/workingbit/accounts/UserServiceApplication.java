@@ -1,4 +1,4 @@
-package com.workingbit.users;
+package com.workingbit.accounts;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @SpringBootApplication
-@ComponentScan({"com.workingbit.users"})
+@ComponentScan({"com.workingbit.accounts"})
 public class UserServiceApplication {
 
 	public static void main(String[] args) {
