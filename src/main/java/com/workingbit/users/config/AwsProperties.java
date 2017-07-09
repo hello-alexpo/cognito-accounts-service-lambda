@@ -1,4 +1,4 @@
-package com.workingbit.accounts.config;
+package com.workingbit.users.config;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,15 +107,14 @@ public class AwsProperties {
   String attributeBirthday;
 
 
-  @Value("${STATUS}")
   private @Getter
-  String status;
+  String status = "ok";
 
   private @Getter
-  String statusOk = "ok";
+  Boolean statusOk = true;
 
   private @Getter
-  String statusFail = "fail";
+  Boolean statusFail = false;
 
   private @Getter
   String statusMessage = "message";

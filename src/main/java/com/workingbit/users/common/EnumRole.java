@@ -1,4 +1,4 @@
-package com.workingbit.accounts.common;
+package com.workingbit.users.common;
 
 /**
  * Created by Aleksey Popryaduhin on 07:42 11/06/2017.
