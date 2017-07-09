@@ -1,6 +1,6 @@
-package com.workingbit.accounts.controller;
+package com.workingbit.users.controller;
 
-import com.workingbit.accounts.common.StringMap;
+import com.workingbit.users.common.StringMap;
 import org.springframework.web.bind.annotation.*;
 
 /**

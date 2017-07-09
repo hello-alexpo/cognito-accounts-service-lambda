@@ -1,8 +1,8 @@
-package com.workingbit.accounts.controller;
+package com.workingbit.users.controller;
 
-import com.workingbit.accounts.common.StringMap;
-import com.workingbit.accounts.config.AwsProperties;
-import com.workingbit.accounts.service.AWSCognitoService;
+import com.workingbit.users.common.StringMap;
+import com.workingbit.users.config.AwsProperties;
+import com.workingbit.users.service.AWSCognitoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,14 +10,14 @@ import javax.ws.rs.core.MediaType;
 
 @RestController
 @RequestMapping(value = "/users", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-public class AuthUserController {
+public class UserController {
 
   private final AWSCognitoService awsCognitoService;
   private final AwsProperties awsProperties;
 
   @Autowired
-  public AuthUserController(AWSCognitoService awsCognitoService,
-                            AwsProperties awsProperties) {
+  public UserController(AWSCognitoService awsCognitoService,
+                        AwsProperties awsProperties) {
     this.awsCognitoService = awsCognitoService;
     this.awsProperties = awsProperties;
   }
@@ -39,10 +39,9 @@ public class AuthUserController {
    */
   @PostMapping("/registerFacebookUser")
   public StringMap registerFacebookUser(@RequestBody StringMap credentials) throws Exception {
-    return StringMap.emptyMap();
-//    return awsCognitoService.registerFacebookUser(
-//        credentials.getString(awsProperties.getFacebookAccessTokenName())
-//    );
+    return awsCognitoService.registerFacebookUser(
+        credentials.getString(awsProperties.getFacebookAccessTokenName())
+    );
   }
 
   @PostMapping("/confirmRegistration")
@@ -67,9 +66,9 @@ public class AuthUserController {
     );
   }
 
-  @PostMapping("/confirmNewPassword")
-  public StringMap confirmNewPassword(@RequestBody StringMap credentials) throws Exception {
-    return awsCognitoService.confirmNewPassword(
+  @PostMapping("/confirmForgotPassword")
+  public StringMap confirmForgotPassword(@RequestBody StringMap credentials) throws Exception {
+    return awsCognitoService.confirmForgotPassword(
         credentials.getString(awsProperties.getAttributeUsername()),
         credentials.getString(awsProperties.getConfirmationCode()),
         credentials.getString(awsProperties.getAttributePassword())
@@ -91,9 +90,13 @@ public class AuthUserController {
    */
   @PostMapping("/authenticateFacebookUser")
   public StringMap authenticateFacebookUser(@RequestBody StringMap credentials) throws Exception {
-    return StringMap.emptyMap();
-//    return awsCognitoService.authenticateFacebookUser(
-//        credentials.getString(awsProperties.getFacebookAccessTokenName())
-//    );
+    return awsCognitoService.authenticateFacebookUser(
+        credentials.getString(awsProperties.getFacebookAccessTokenName())
+    );
+  }
+
+  @PostMapping("/logout")
+  public StringMap logout(@RequestBody StringMap credentials) {
+    return awsCognitoService.logout(credentials.getString(awsProperties.getAttributeUsername()));
   }
 }
