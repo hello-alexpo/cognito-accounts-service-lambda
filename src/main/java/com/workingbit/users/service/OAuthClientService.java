@@ -1,8 +1,8 @@
-package com.workingbit.accounts.service;
+package com.workingbit.users.service;
 
-import com.workingbit.accounts.common.CommonUtils;
-import com.workingbit.accounts.common.StringMap;
-import com.workingbit.accounts.config.OAuthProperties;
+import com.workingbit.users.common.CommonUtils;
+import com.workingbit.users.common.StringMap;
+import com.workingbit.users.config.OAuthProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;

@@ -1,13 +1,14 @@
-package com.workingbit.accounts.service;
+package com.workingbit.users.service;
 
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProviderClient;
 import com.amazonaws.services.cognitoidp.model.*;
-import com.workingbit.accounts.common.CommonUtils;
-import com.workingbit.accounts.common.StringMap;
-import com.workingbit.accounts.config.AwsProperties;
-import com.workingbit.accounts.config.OAuthProperties;
-import com.workingbit.accounts.exception.DataAccessException;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.workingbit.users.common.CommonUtils;
+import com.workingbit.users.common.StringMap;
+import com.workingbit.users.config.AwsProperties;
+import com.workingbit.users.config.OAuthProperties;
+import com.workingbit.users.exception.DataAccessException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,11 +66,11 @@ public class AWSCognitoService {
     return createStatusOk("register.CONFIRM_EMAIL", "Registration succeed. Confirmation code was sent on your email.");
   }
 
-//  public StringMap registerFacebookUser(String facebookAccessToken)
-//      throws Exception {
-//    StringMap userDetailsFromFacebook = oAuthClientService.getUserDetailsFromFacebook(facebookAccessToken);
-//    return adminCreateUser(userDetailsFromFacebook);
-//  }
+  public StringMap registerFacebookUser(String facebookAccessToken)
+      throws Exception {
+    StringMap userDetailsFromFacebook = oAuthClientService.getUserDetailsFromFacebook(facebookAccessToken);
+    return adminCreateUser(userDetailsFromFacebook);
+  }
 
   public StringMap confirmRegistration(String username, String confirmationCode) throws Exception {
     ConfirmSignUpRequest confirmSignUpRequest = new ConfirmSignUpRequest()
@@ -175,41 +176,51 @@ public class AWSCognitoService {
     }
   }
 
-//  public StringMap authenticateFacebookUser(String facebookAccessToken) throws Exception {
-//    // get user from Facebook by access_token
-//    StringMap userFromFacebook = oAuthClientService.getUserDetailsFromFacebook(facebookAccessToken);
-//    String username = userFromFacebook.getString(awsProperties.getAttributeEmail());
-//    // retrieve user from db to get his tokens
-//    Map<String, AttributeValue> userFromDb = dynamoDbService.retrieveByUsername(username);
-//    GetUserRequest getUserRequest;
-//    GetUserResult user;
-//    try {
-//      // get user by access token
-//      getUserRequest = new GetUserRequest()
-//          .withAccessToken(userFromDb.get(awsProperties.getUserAccessToken()).getS());
-//      user = awsCognitoIdentityProvider.getUser(getUserRequest);
-//    } catch (NotAuthorizedException e) {
-//      // access token is expired. Acquire it using refresh token
-//      StringMap authTokens;
-//      try {
-//        authTokens = refreshToken(username, userFromDb.get(awsProperties.getRefreshToken()).getS());
-//      } catch (UserNotFoundException ex) {
-//        return createStatusFail("authenticateFacebookUser.FAIL", ex.getErrorMessage());
-//      }
-//      // get user using new access token
-//      getUserRequest = new GetUserRequest()
-//          .withAccessToken(authTokens.getString(awsProperties.getUserAccessToken()));
-//      // update user tokens
-//      dynamoDbService.storeUserWithAuthTokens(username, true, authTokens);
-//      user = awsCognitoIdentityProvider.getUser(getUserRequest);
-//    } catch (UserNotFoundException ex) {
-//      return createStatusFail("authenticateFacebookUser.FAIL", ex.getErrorMessage());
-//    }
-//
-//    // authenticate with stored password
-//    String password = userFromDb.get(awsProperties.getAttributePassword()).getS() + oAuthProperties.getTempPasswordSecret();
-//    return authenticateUser(user.getUsername(), password);
-//  }
+  public StringMap authenticateFacebookUser(String facebookAccessToken) throws Exception {
+    // get user from Facebook by access_token
+    StringMap userFromFacebook = oAuthClientService.getUserDetailsFromFacebook(facebookAccessToken);
+    String username = userFromFacebook.getString(awsProperties.getAttributeEmail());
+    // retrieve user from db to get his tokens
+    Map<String, AttributeValue> userFromDb = dynamoDbService.retrieveByUsername(username);
+    GetUserRequest getUserRequest;
+    GetUserResult user;
+    try {
+      // get user by access token
+      getUserRequest = new GetUserRequest()
+          .withAccessToken(userFromDb.get(awsProperties.getUserAccessToken()).getS());
+      user = awsCognitoIdentityProvider.getUser(getUserRequest);
+      if (user == null) {
+        throw new NotAuthorizedException("authenticateFacebookUser.FAIL");
+      }
+    } catch (NotAuthorizedException e) {
+      // access token is expired. Refresh it using refresh token
+      StringMap authTokens;
+      try {
+        authTokens = refreshToken(username, userFromDb.get(awsProperties.getRefreshToken()).getS());
+
+        getUserRequest = new GetUserRequest()
+            .withAccessToken(authTokens.getString(awsProperties.getUserAccessToken()));
+        // update user tokens
+        dynamoDbService.storeUserWithAuthTokens(username, true, authTokens);
+        user = awsCognitoIdentityProvider.getUser(getUserRequest);
+        if (user == null) {
+          throw new NotAuthorizedException("authenticateFacebookUser.FAIL");
+        }
+      } catch (UserNotFoundException ex) {
+        return createStatusFail("authenticateFacebookUser.FAIL", ex.getErrorMessage());
+      } catch (NotAuthorizedException ex) {
+        // refresh token has been revoked
+        ex.printStackTrace();
+      }
+      // get user using new access token
+    } catch (UserNotFoundException ex) {
+      return createStatusFail("authenticateFacebookUser.FAIL", ex.getErrorMessage());
+    }
+
+    // authenticate with stored password
+    String password = userFromDb.get(awsProperties.getAttributePassword()).getS() + oAuthProperties.getTempPasswordSecret();
+    return authenticateUser(username, password);
+  }
 
   private StringMap refreshToken(String username, String refreshToken) throws Exception {
     Map<String, String> authParameters = new HashMap<>();
@@ -233,7 +244,7 @@ public class AWSCognitoService {
     return createStatusOk("forgotPassword.SENT", "Password reminded");
   }
 
-  public StringMap confirmNewPassword(String username, String confirmation, String password) throws Exception {
+  public StringMap confirmForgotPassword(String username, String confirmation, String password) throws Exception {
     ConfirmForgotPasswordRequest confirmForgotPasswordRequest = new ConfirmForgotPasswordRequest()
         .withClientId(awsProperties.getAppClientId())
         .withUsername(username)
@@ -241,26 +252,15 @@ public class AWSCognitoService {
         .withSecretHash(getSecretHash(username))
         .withPassword(password);
     awsCognitoIdentityProvider.confirmForgotPassword(confirmForgotPasswordRequest);
-    return createStatusOk("confirmNewPassword.CHANGED", "Password confirmed");
+    return createStatusOk("confirmForgotPassword.CHANGED", "Password confirmed");
   }
 
-  public StringMap adminResetUserPassword(String username) {
-    AdminResetUserPasswordRequest adminResetUserPasswordRequest = new AdminResetUserPasswordRequest()
-        .withUsername(username)
-        .withUserPoolId(awsProperties.getUserPoolId());
-    awsCognitoIdentityProvider.adminResetUserPassword(adminResetUserPasswordRequest);
-    return StringMap.emptyMap();
-  }
-
-  public void logout(String username) {
+  public StringMap logout(String username) {
     AdminUserGlobalSignOutRequest adminUserGlobalSignOutRequest = new AdminUserGlobalSignOutRequest()
         .withUserPoolId(awsProperties.getUserPoolId())
         .withUsername(username);
     awsCognitoIdentityProvider.adminUserGlobalSignOut(adminUserGlobalSignOutRequest);
-  }
-
-  public StringMap echo(StringMap echo) {
-    return createStatusOk("echo.SUCCESS", echo);
+    return createStatusOk("logout.SUCCESS", "User is logged out");
   }
 
   private String getSecretHash(String username) throws Exception {
@@ -319,8 +319,11 @@ public class AWSCognitoService {
 
     // don't reveal refresh token to out
     authTokens.remove(awsProperties.getRefreshToken());
+
+    // return tokens and username
     StringMap resp = new StringMap();
     resp.putAll(authTokens);
+    resp.put(awsProperties.getAttributeUsername(), username);
     return resp;
   }
 

@@ -1,4 +1,4 @@
-package com.workingbit.accounts.common;
+package com.workingbit.users.common;
 
 import java.util.*;
 

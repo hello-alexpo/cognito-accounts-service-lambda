@@ -1,4 +1,4 @@
-package com.workingbit.accounts.common;
+package com.workingbit.users.common;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -141,6 +141,6 @@ public class CommonUtils {
 	}
 
 	public static Object formatDate(Object birthday) {
-		return birthday;
+		return birthday == null ? "" : birthday;
 	}
 }
