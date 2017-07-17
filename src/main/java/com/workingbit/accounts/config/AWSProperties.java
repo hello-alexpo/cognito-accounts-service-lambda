@@ -5,11 +5,12 @@ import org.apache.deltaspike.core.api.config.ConfigProperty;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Created by Aleksey Popryaduhin on 08:57 11/06/2017.
  */
-@ApplicationScoped
+@Singleton
 public class AWSProperties {
 
     @Inject
