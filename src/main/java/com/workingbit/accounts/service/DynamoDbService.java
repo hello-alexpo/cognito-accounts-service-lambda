@@ -4,12 +4,12 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.model.*;
-import com.workingbit.accounts.config.AwsProperties;
+import com.workingbit.accounts.config.AWSProperties;
 import com.workingbit.accounts.exception.DataAccessException;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,18 +19,18 @@ import java.util.stream.Collectors;
 /**
  * Created by Aleksey Popryaduhin on 20:11 10/06/2017.
  */
-@Service
+@Singleton
 public class DynamoDbService {
 
 
   private final AmazonDynamoDB ddb;
-  private final AwsProperties awsProperties;
+  private final AWSProperties awsProperties;
 
   /**
    * Looks up table name and creates one if it does not exist
    */
-  @Autowired
-  public DynamoDbService(AwsProperties awsProperties) {
+  @Inject
+  public DynamoDbService(AWSProperties awsProperties) {
     this.awsProperties = awsProperties;
     ddb = AmazonDynamoDBClientBuilder.defaultClient();
 

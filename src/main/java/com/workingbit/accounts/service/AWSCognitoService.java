@@ -6,16 +6,16 @@ import com.amazonaws.services.cognitoidp.model.*;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.workingbit.accounts.common.CommonUtils;
 import com.workingbit.accounts.common.StringMap;
-import com.workingbit.accounts.config.AwsProperties;
+import com.workingbit.accounts.config.AWSProperties;
 import com.workingbit.accounts.config.OAuthProperties;
 import com.workingbit.accounts.exception.DataAccessException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.*;
 
 import static com.amazonaws.util.Base64.encodeAsString;
@@ -23,18 +23,18 @@ import static com.amazonaws.util.Base64.encodeAsString;
 /**
  * Created by Aleksey Popryaduhin on 13:33 11/06/2017.
  */
-@Service
+@Singleton
 public class AWSCognitoService {
 
-  private final AwsProperties awsProperties;
+  private final AWSProperties awsProperties;
   private final OAuthProperties oAuthProperties;
   private final com.workingbit.accounts.service.OAuthClientService oAuthClientService;
   private final com.workingbit.accounts.service.DynamoDbService dynamoDbService;
 
   private final AWSCognitoIdentityProvider awsCognitoIdentityProvider;
 
-  @Autowired
-  public AWSCognitoService(AwsProperties awsProperties,
+  @Inject
+  public AWSCognitoService(AWSProperties awsProperties,
                            OAuthProperties oAuthProperties,
                            com.workingbit.accounts.service.OAuthClientService oAuthClientService,
                            com.workingbit.accounts.service.DynamoDbService dynamoDbService) {

@@ -13,14 +13,14 @@ import com.amazonaws.services.securitytoken.model.AssumeRoleWithWebIdentityReque
 import com.amazonaws.services.securitytoken.model.AssumeRoleWithWebIdentityResult;
 import com.workingbit.accounts.common.EnumRole;
 import com.workingbit.accounts.common.StringMap;
-import com.workingbit.accounts.config.AwsProperties;
+import com.workingbit.accounts.config.AWSProperties;
 import com.workingbit.accounts.exception.DataAccessException;
 import com.workingbit.accounts.exception.UnauthorizedException;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,18 +29,18 @@ import java.util.Map;
 /**
  * Created by Aleksey Popryaduhin on 13:59 15/06/2017.
  */
-@Service
+@Singleton
 public class AmazonCognitoIdentityService {
 
   private final AmazonCognitoIdentity amazonCognitoIdentity;
   private final DynamoDbService dynamoDbService;
   private final OAuthClientService oAuthClientService;
-  private final AwsProperties awsProperties;
+  private final AWSProperties awsProperties;
 
-  @Autowired
+  @Inject
   public AmazonCognitoIdentityService(DynamoDbService dynamoDbService,
                                       OAuthClientService oAuthClientService,
-                                      AwsProperties awsProperties) {
+                                      AWSProperties awsProperties) {
     this.amazonCognitoIdentity = AmazonCognitoIdentityClient.builder()
         .withRegion(awsProperties.getRegion())
         .build();
