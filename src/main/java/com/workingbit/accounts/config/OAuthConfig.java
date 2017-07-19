@@ -9,7 +9,7 @@ public class OAuthConfig implements PropertyFileConfig {
 
     @Override
     public String getPropertyFileName() {
-        return "oauth.properties";
+        return "file:./oauth.properties";
     }
 
     @Override

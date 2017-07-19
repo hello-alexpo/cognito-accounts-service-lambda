@@ -8,7 +8,7 @@ import org.apache.deltaspike.core.api.config.PropertyFileConfig;
 public class AWSConfig implements PropertyFileConfig {
     @Override
     public String getPropertyFileName() {
-        return "aws.properties";
+        return "file:./aws.properties";
     }
 
     @Override
