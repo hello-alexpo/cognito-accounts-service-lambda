@@ -25,6 +25,5 @@ nbdist/
 
 .serverless
 
-aws.properties
-oauth.properties
+apache-deltaspike.properties
 serverless.yml
